@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'splash_page.dart';
+
+import 'package:be_kind_project/splash_page.dart';
 
 void main() {
   runApp(const MyApp());

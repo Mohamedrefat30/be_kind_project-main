@@ -1,7 +1,8 @@
+import 'package:be_kind_project/app_colors.dart';
 import 'package:flutter/material.dart';
 
-class TheDots extends StatelessWidget {
-  const TheDots({super.key, required this.isActive});
+class OnboardingDot extends StatelessWidget {
+  const OnboardingDot({super.key, required this.isActive});
 
   final bool isActive;
 
@@ -12,7 +13,7 @@ class TheDots extends StatelessWidget {
       height: 8,
       width: 8,
       decoration: BoxDecoration(
-        color: isActive ? const Color(0xff9C6B73) : const Color(0xffD9D9D9),
+        color: isActive ? AppColors.accent : AppColors.dotInactive,
         shape: BoxShape.circle,
       ),
     );

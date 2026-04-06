@@ -1,6 +1,6 @@
-import 'package:be_kind_project/animationreload.dart';
-
+import 'package:be_kind_project/app_colors.dart';
 import 'package:be_kind_project/login_page.dart';
+import 'package:be_kind_project/sign_language_page_route.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -17,8 +17,6 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xff9C6B73);
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -27,41 +25,34 @@ class _SignUpPageState extends State<SignUpPage> {
           child: Column(
             children: [
               Text(
-                "Sign Up",
+                'Sign Up',
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 35,
                   fontWeight: FontWeight.bold,
-                  color: primaryColor,
+                  color: AppColors.accent,
                 ),
               ),
               const SizedBox(height: 100),
-
-              _buildTextField("Full Name"),
+              _buildTextField('Full Name'),
               const SizedBox(height: 20),
-
-              _buildTextField("Email Id"),
+              _buildTextField('Email Id'),
               const SizedBox(height: 20),
-
               _buildPasswordField(
-                label: "Password",
+                label: 'Password',
                 isObscure: _isObscurePass,
                 onTap: () {
                   setState(() => _isObscurePass = !_isObscurePass);
                 },
               ),
               const SizedBox(height: 20),
-
-              // 5. حقل Confirm Password
               _buildPasswordField(
-                label: "Confirm Password",
+                label: 'Confirm Password',
                 isObscure: _isObscureConfirm,
                 onTap: () {
                   setState(() => _isObscureConfirm = !_isObscureConfirm);
                 },
               ),
-
               const SizedBox(height: 50),
-
               SizedBox(
                 width: double.infinity,
                 height: 55,
@@ -73,13 +64,13 @@ class _SignUpPageState extends State<SignUpPage> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor,
+                    backgroundColor: AppColors.accent,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
                   child: Text(
-                    "Sign Up",
+                    'Sign Up',
                     style: GoogleFonts.playfair(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
@@ -104,7 +95,7 @@ class _SignUpPageState extends State<SignUpPage> {
           borderSide: BorderSide(color: Colors.grey),
         ),
         focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Color(0xff9C6B73)),
+          borderSide: BorderSide(color: AppColors.accent),
         ),
       ),
     );
@@ -117,7 +108,6 @@ class _SignUpPageState extends State<SignUpPage> {
   }) {
     return TextField(
       obscureText: isObscure,
-      keyboardType: TextInputType.number,
       decoration: InputDecoration(
         labelText: label,
         labelStyle: const TextStyle(color: Colors.grey),
@@ -132,7 +122,7 @@ class _SignUpPageState extends State<SignUpPage> {
           borderSide: BorderSide(color: Colors.grey),
         ),
         focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Color(0xff9C6B73)),
+          borderSide: BorderSide(color: AppColors.accent),
         ),
       ),
     );

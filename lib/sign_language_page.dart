@@ -1,4 +1,6 @@
 import 'dart:io';
+
+import 'package:be_kind_project/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -10,73 +12,55 @@ class SignLanguagePage extends StatefulWidget {
 }
 
 class _SignLanguagePageState extends State<SignLanguagePage> {
-  File? selectedImage;
+  File? _selectedImage;
+  final ImagePicker _picker = ImagePicker();
 
-  final ImagePicker picker = ImagePicker();
-
-  /// Camera
-  Future takePhoto() async {
-    final XFile? photo = await picker.pickImage(source: ImageSource.camera);
-
+  Future<void> _pickFromCamera() async {
+    final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
     if (photo != null) {
-      setState(() {
-        selectedImage = File(photo.path);
-      });
+      setState(() => _selectedImage = File(photo.path));
     }
   }
 
-  /// Gallery
-  Future uploadPhoto() async {
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-
+  Future<void> _pickFromGallery() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
-      setState(() {
-        selectedImage = File(image.path);
-      });
+      setState(() => _selectedImage = File(image.path));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffFFFFFF),
-
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-
           child: Column(
             children: [
               const SizedBox(height: 20),
-
-              /// Header
               Row(
                 children: [
                   Image.asset(
-                    "assets/images/7c3c6d2cb814ec07c053748ad45ae6b4613213b6 (2).jpg",
+                    'assets/images/7c3c6d2cb814ec07c053748ad45ae6b4613213b6 (2).jpg',
                     height: 70,
                   ),
-
                   const Spacer(),
-
                   const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Sign Language",
+                        'Sign Language',
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xffB1747C),
+                          color: AppColors.rose,
                         ),
                       ),
-
-                      Text("Translator", style: TextStyle(fontSize: 16)),
+                      Text('Translator', style: TextStyle(fontSize: 16)),
                     ],
                   ),
-
                   const Spacer(),
-
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
@@ -87,95 +71,65 @@ class _SignLanguagePageState extends State<SignLanguagePage> {
                   ),
                 ],
               ),
-
               const SizedBox(height: 50),
-
-              /// Girl Image
               Image.asset(
-                "assets/images/42632216493fb1aa3e2f38568714059fffa08835.png",
+                'assets/images/42632216493fb1aa3e2f38568714059fffa08835.png',
                 height: 200,
               ),
-
               const SizedBox(height: 30),
-
-              /// Upload Box
               Container(
                 padding: const EdgeInsets.all(15),
-
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
                   border: Border.all(color: Colors.grey.shade300),
                 ),
-
                 child: Column(
                   children: [
-                    /// Camera
                     GestureDetector(
-                      onTap: takePhoto,
-
+                      onTap: _pickFromCamera,
                       child: const Row(
                         children: [
                           Icon(Icons.camera_alt_outlined),
-
                           SizedBox(width: 10),
-
-                          Text("Take Photo", style: TextStyle(fontSize: 16)),
+                          Text('Take Photo', style: TextStyle(fontSize: 16)),
                         ],
                       ),
                     ),
-
                     const Divider(height: 30),
-
-                    /// Gallery
                     GestureDetector(
-                      onTap: uploadPhoto,
-
+                      onTap: _pickFromGallery,
                       child: const Row(
                         children: [
                           Icon(Icons.image_outlined),
-
                           SizedBox(width: 10),
-
-                          Text("Upload photo", style: TextStyle(fontSize: 16)),
+                          Text('Upload photo', style: TextStyle(fontSize: 16)),
                         ],
                       ),
                     ),
                   ],
                 ),
               ),
-
               const SizedBox(height: 20),
-
-              /// Image Preview
-              selectedImage == null
+              _selectedImage == null
                   ? const Text(
-                      "Upload image will appear here",
+                      'Upload image will appear here',
                       style: TextStyle(color: Colors.grey),
                     )
                   : ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: Image.file(selectedImage!, height: 150),
+                      child: Image.file(_selectedImage!, height: 150),
                     ),
-
               const Spacer(),
-
-              /// Translate Button
               Container(
                 width: double.infinity,
                 height: 55,
-
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30),
-
-                  gradient: const LinearGradient(
-                    colors: [Color(0xffC98A92), Color(0xffB1747C)],
-                  ),
+                  gradient: AppColors.translateButtonGradient,
                 ),
-
                 alignment: Alignment.center,
-
                 child: const Text(
-                  "Translate",
+                  'Translate',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
@@ -183,7 +137,6 @@ class _SignLanguagePageState extends State<SignLanguagePage> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 20),
             ],
           ),
