@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:be_kind_project/core/theme/app_colors.dart';
 import 'package:be_kind_project/dependencies.dart';
 import 'package:be_kind_project/features/sign_language/presentation/controllers/sign_language_controller.dart';
+import 'package:be_kind_project/features/sign_language/presentation/pages/confirm_image.dart';
+import 'package:be_kind_project/features/sign_language/presentation/pages/settingpage.dart';
 import 'package:flutter/material.dart';
 
 class SignLanguagePage extends StatefulWidget {
@@ -29,6 +31,7 @@ class _SignLanguagePageState extends State<SignLanguagePage> {
     final image = await _controller.pickFromCamera();
     if (image != null) {
       setState(() => _selectedImage = image);
+      _navigateToConfirmPage(image.path);
     }
   }
 
@@ -36,7 +39,17 @@ class _SignLanguagePageState extends State<SignLanguagePage> {
     final image = await _controller.pickFromGallery();
     if (image != null) {
       setState(() => _selectedImage = image);
+      _navigateToConfirmPage(image.path);
     }
+  }
+
+  void _navigateToConfirmPage(String path) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ConfirmImageScreen(imagePath: path),
+      ),
+    );
   }
 
   @override
@@ -71,13 +84,24 @@ class _SignLanguagePageState extends State<SignLanguagePage> {
                     ],
                   ),
                   const Spacer(),
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
+                  // استبدل الـ Container القديم بهذا الكود
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SettingsPage(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(Icons.settings, color: Colors.black54),
                     ),
-                    child: const Icon(Icons.settings),
                   ),
                 ],
               ),
@@ -130,24 +154,36 @@ class _SignLanguagePageState extends State<SignLanguagePage> {
                       child: Image.file(_selectedImage!, height: 150),
                     ),
               const Spacer(),
-              Container(
-                width: double.infinity,
-                height: 55,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  gradient: AppColors.translateButtonGradient,
-                ),
-                alignment: Alignment.center,
-                child: const Text(
-                  'Translate',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+              GestureDetector(
+                onTap: () {
+                  if (_selectedImage != null) {
+                    _navigateToConfirmPage(_selectedImage!.path);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Please select an image first'),
+                      ),
+                    );
+                  }
+                },
+                child: Container(
+                  width: double.infinity,
+                  height: 55,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    gradient: AppColors.translateButtonGradient,
+                  ),
+                  alignment: Alignment.center,
+                  child: const Text(
+                    'Translate',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
             ],
           ),
         ),
