@@ -1,4 +1,8 @@
 import 'package:be_kind_project/core/theme/app_colors.dart';
+import 'package:be_kind_project/setting/About_us/about_us.dart';
+import 'package:be_kind_project/setting/contact_us/contact_us.dart';
+import 'package:be_kind_project/setting/log_out/log_out.dart';
+import 'package:be_kind_project/setting/rate_us/rate_us.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -62,25 +66,53 @@ class SettingsPage extends StatelessWidget {
               icon: Icons.info_outline,
               title: 'About Us',
               iconColor: const Color(0xFFD1F5FF),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AboutUs(),
+                  ),
+                );
+              },
             ),
             _buildSettingItem(
               icon: Icons.email_outlined,
               title: 'Contact Us',
               iconColor: const Color(0xFFD1FFDA),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ContactUs(),
+                  ),
+                );
+              },
             ),
             _buildSettingItem(
               icon: Icons.star_border,
               title: 'Rate Us',
               iconColor: const Color(0xFFFFEBD1),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RateUs(),
+                  ),
+                );
+              },
             ),
             _buildSettingItem(
               icon: Icons.logout,
               title: 'Log Out',
               iconColor: const Color(0xFFFFD1D1),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LogOut(),
+                  ),
+                );
+              },
             ),
           ],
         ),
