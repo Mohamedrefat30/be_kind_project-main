@@ -84,7 +84,6 @@ class _SignLanguagePageState extends State<SignLanguagePage> {
                     ],
                   ),
                   const Spacer(),
-                  // استبدل الـ Container القديم بهذا الكود
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -166,20 +165,23 @@ class _SignLanguagePageState extends State<SignLanguagePage> {
                     );
                   }
                 },
-                child: Container(
-                  width: double.infinity,
-                  height: 55,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    gradient: AppColors.translateButtonGradient,
-                  ),
-                  alignment: Alignment.center,
-                  child: const Text(
-                    'Translate',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                child: Padding(
+                  padding: const EdgeInsets.all(25),
+                  child: Container(
+                    width: double.infinity,
+                    height: 55,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      gradient: AppColors.translateButtonGradient,
+                    ),
+                    alignment: Alignment.center,
+                    child: const Text(
+                      'Translate',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
