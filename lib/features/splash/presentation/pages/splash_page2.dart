@@ -1,5 +1,6 @@
 import 'package:be_kind_project/core/theme/app_colors.dart';
-import 'package:be_kind_project/features/auth/presentation/pages/login_page.dart';
+import 'package:be_kind_project/features/auth/presentation/pages/login_page.dart'
+    hide AppColors;
 import 'package:be_kind_project/features/auth/presentation/pages/signup_page.dart';
 import 'package:be_kind_project/features/auth/presentation/widgets/auth_button.dart';
 import 'package:flutter/material.dart';

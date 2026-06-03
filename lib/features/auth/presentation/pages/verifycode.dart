@@ -2,42 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:be_kind_project/core/services/api_service.dart';
 import 'package:be_kind_project/core/theme/app_colors.dart';
-import 'package:be_kind_project/core/routing/sign_language_page_route.dart';
 import 'package:be_kind_project/features/auth/presentation/pages/login_page.dart';
 
-class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+class VerifyCodeScreen extends StatefulWidget {
+  final String email;
+
+  const VerifyCodeScreen({super.key, required this.email});
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  State<VerifyCodeScreen> createState() => _VerifyCodeScreenState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
-  // Controllers لجمع البيانات من الخانات
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
+  final TextEditingController _codeController = TextEditingController();
+  final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
+  // ✅ تعديل: فصل متغيرات الإخفاء والإظهار لكل حقل بشكل مستقل لـ UX أفضل
   bool _isObscurePass = true;
   bool _isObscureConfirm = true;
   bool _isLoading = false;
 
-  // الدالة الأساسية لعملية التسجيل المربوطة بالـ Postman
-  Future<void> _handleSignUp() async {
-    // 1. التأكد من إدخال جميع البيانات في كل الحقول
-    if (_nameController.text.trim().isEmpty ||
-        _emailController.text.trim().isEmpty ||
-        _passwordController.text.isEmpty ||
-        _confirmPasswordController.text.isEmpty) {
-      _showError("برجاء ملء جميع الحقول");
+  Future<void> _handleResetPassword() async {
+    // 1. التحقق من إدخال البيانات
+    if (_codeController.text.trim().isEmpty ||
+        _newPasswordController.text.isEmpty) {
+      _showMessage("برجاء إدخال الكود وكلمة المرور الجديدة", isError: true);
       return;
     }
 
-    // 2. التأكد من تطابق كلمة السر مع حقل التأكيد
-    if (_passwordController.text != _confirmPasswordController.text) {
-      _showError("كلمات السر غير متطابقة!");
+    if (_newPasswordController.text != _confirmPasswordController.text) {
+      _showMessage("كلمات السر غير متطابقة", isError: true);
       return;
     }
 
@@ -46,64 +42,57 @@ class _SignUpPageState extends State<SignUpPage> {
     try {
       final apiService = ApiService();
 
-      // إرسال الطلب للسيرفر الأونلاين على Railway مع إضافة الروابط والمفاتيح المطلوبة بالظبط
+      // 2. تجهيز الداتا بناءً على ملف الـ API الخاص بالـ Postman
+      final Map<String, dynamic> requestData = {
+        'email': widget.email.trim(),
+        'code': _codeController.text.trim(),
+        'newPassword': _newPasswordController.text,
+      };
+
+      print("DEBUG: Sending Reset Data: $requestData");
+
+      // 3. ✅ تعديل: وضع الرابط الكامل للسيرفر الأونلاين لضمان نجاح الاتصال
       final response = await apiService.post(
-        'https://newproject-production-396a.up.railway.app/api/auth/register',
-        {
-          'name': _nameController.text.trim(),
-          'email': _emailController.text.trim(),
-          'password': _passwordController.text,
-          'confirmPassword':
-              _confirmPasswordController.text, // الكي المطلوب في البوستمان
-        },
+        'https://newproject-production-396a.up.railway.app/api/auth/reset-password',
+        requestData,
       );
 
       if (!mounted) return;
 
-      // 3. التحقق من نجاح العملية (Status 200 أو 201)
       if (response != null &&
-          (response.statusCode == 201 || response.statusCode == 200)) {
-        _showSuccess("تم إنشاء الحساب بنجاح! يمكنك تسجيل الدخول الآن.");
+          (response.statusCode == 200 || response.statusCode == 201)) {
+        print("DEBUG: Reset Success: ${response.data}");
+        _showMessage("تم تغيير كلمة المرور بنجاح!", isError: false);
 
-        // تأخير بسيط عشان المستخدم يشوف رسالة النجاح
+        // انتظار بسيط قبل الرجوع للـ Login ليرى المستخدم الرسالة
         await Future.delayed(const Duration(seconds: 2));
 
         if (!mounted) return;
-        // الانتقال التلقائي لصفحة اللوجين
-        Navigator.pushReplacement(
+        Navigator.pushAndRemoveUntil(
           context,
-          SignLanguagePageRoute(page: const LoginPage()),
+          MaterialPageRoute(builder: (context) => const LoginPage()),
+          (route) => false,
         );
       } else {
-        // عرض رسالة الخطأ القادمة من السيرفر (مثلاً لو الإيميل متسجل قبل كدة)
-        String msg = response?.data['message'] ?? "فشل التسجيل، حاول مرة أخرى";
-        _showError(msg);
+        print("DEBUG: Reset Failed Response: ${response?.data}");
+        String errorMsg =
+            response?.data['message'] ?? "الكود غير صحيح أو انتهت صلاحيته";
+        _showMessage(errorMsg, isError: true);
       }
     } catch (e) {
-      _showError("خطأ في الاتصال بالسيرفر. تأكد من البيانات أو الإنترنت");
+      print("DEBUG: Exception during Reset: $e");
+      _showMessage("خطأ في الاتصال بالسيرفر، تأكد من الإنترنت", isError: true);
     } finally {
-      // ✅ تم تصحيح الكلمة هنا من final إلى finally ليعمل الكود بدون أخطاء
       if (mounted) setState(() => _isLoading = false);
     }
   }
 
-  // دوال مساعدة لعرض الرسائل (SnackBars)
-  void _showError(String msg) {
+  void _showMessage(String msg, {bool isError = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(msg),
-        backgroundColor: Colors.redAccent,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-  }
-
-  void _showSuccess(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(msg),
-        backgroundColor: Colors.green,
-        behavior: SnackBarBehavior.floating,
+        backgroundColor: isError ? Colors.redAccent : Colors.green,
+        behavior: SnackBarBehavior.floating, // تفعيل الـ Floating بشكل موحد
       ),
     );
   }
@@ -115,58 +104,62 @@ class _SignUpPageState extends State<SignUpPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                'Sign Up',
+                'Verify Code',
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 35,
                   fontWeight: FontWeight.bold,
                   color: AppColors.accent,
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 20),
+              Text(
+                "تم إرسال كود التحقق إلى:\n${widget.email}",
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+              const SizedBox(height: 50),
+
               _buildTextField(
-                'Full Name',
-                _nameController,
-                Icons.person_outline,
+                'Verification Code',
+                _codeController,
+                Icons.vignette_outlined,
+                keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 20),
-              _buildTextField(
-                'Email Address',
-                _emailController,
-                Icons.email_outlined,
-              ),
-              const SizedBox(height: 20),
+
+              // حقل كلمة السر الجديدة
               _buildPasswordField(
-                label: 'Password',
-                controller: _passwordController,
+                label: 'New Password',
+                controller: _newPasswordController,
                 isObscure: _isObscurePass,
                 onTap: () => setState(() => _isObscurePass = !_isObscurePass),
               ),
               const SizedBox(height: 20),
+
+              // حقل تأكيد كلمة السر الجديدة
               _buildPasswordField(
-                label: 'Confirm Password',
+                label: 'Confirm New Password',
                 controller: _confirmPasswordController,
                 isObscure: _isObscureConfirm,
                 onTap: () =>
                     setState(() => _isObscureConfirm = !_isObscureConfirm),
               ),
+
               const SizedBox(height: 50),
+
               SizedBox(
                 width: double.infinity,
                 height: 55,
                 child: ElevatedButton(
-                  onPressed: _isLoading ? null : _handleSignUp,
+                  onPressed: _isLoading ? null : _handleResetPassword,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.accent,
                     shape: RoundedRectangleBorder(
@@ -176,7 +169,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   child: _isLoading
                       ? const CircularProgressIndicator(color: Colors.white)
                       : Text(
-                          'Create Account',
+                          'Reset Password',
                           style: GoogleFonts.playfair(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -192,14 +185,15 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  // Widget مخصص لحقول النص العادية
   Widget _buildTextField(
     String label,
     TextEditingController controller,
-    IconData icon,
-  ) {
+    IconData icon, {
+    TextInputType keyboardType = TextInputType.text,
+  }) {
     return TextField(
       controller: controller,
+      keyboardType: keyboardType,
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon, color: AppColors.accent),
@@ -210,7 +204,7 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  // Widget مخصص لحقول كلمة السر مع زر الإظهار/الإخفاء
+  // ✅ تعديل الـ Widget لاستقبال الـ parameters الجديدة المنفصلة
   Widget _buildPasswordField({
     required String label,
     required TextEditingController controller,

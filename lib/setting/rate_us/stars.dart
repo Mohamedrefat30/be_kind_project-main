@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class RatingWidget extends StatefulWidget {
+  const RatingWidget({super.key});
+
   @override
   State<RatingWidget> createState() => _RatingWidgetState();
 }

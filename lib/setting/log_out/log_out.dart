@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-
 import '../../features/sign_language/presentation/pages/settingpage.dart';
-import '../../features/splash/presentation/pages/splash_page.dart';
 import '../../features/splash/presentation/pages/splash_page2.dart';
 
 class LogOut extends StatelessWidget {
@@ -13,10 +11,10 @@ class LogOut extends StatelessWidget {
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         centerTitle: true,
-        title: Text("About Us" , style: TextStyle(
-          fontWeight: FontWeight.w700,
-          fontSize: 25,
-        ),),
+        title: Text(
+          "About Us",
+          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 25),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -25,30 +23,21 @@ class LogOut extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.04,
-              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.04),
               Center(child: Image.asset('assets/images/Frame 155 (3).png')),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.07,
+              SizedBox(height: MediaQuery.of(context).size.height * 0.07),
+              Text(
+                'Are you sure you want to log out?',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.w400, fontSize: 30),
               ),
-              Text('Are you sure you want to log out?',textAlign: TextAlign.center,
-                  style: TextStyle(
-               fontWeight: FontWeight.w400,
-                    fontSize: 30,)
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+              Text(
+                'You will need to login again to access your account.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
               ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.05,
-              ),
-              Text('You will need to login again to access your account.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 16,)
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.03,
-              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.03),
               Row(
                 children: [
                   Expanded(
@@ -72,9 +61,9 @@ class LogOut extends StatelessWidget {
                       child: Text("Log out"),
                     ),
                   ),
-          
+
                   SizedBox(width: 10),
-          
+
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
@@ -97,8 +86,8 @@ class LogOut extends StatelessWidget {
                     ),
                   ),
                 ],
-              )
-              ],
+              ),
+            ],
           ),
         ),
       ),
